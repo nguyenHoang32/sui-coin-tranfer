@@ -46,11 +46,6 @@ export const TransferCoin = () => {
   const isAddressValid = isValidSuiAddress(receiverAddress);
 
   const handleSend = async () => {
-    if (!currentAccount) {
-      setOpen(true);
-      return;
-    }
-
     if (!receiverAddress || !amount) {
       setTxError("Receiver address or amount missing");
       return;
@@ -219,17 +214,25 @@ export const TransferCoin = () => {
         wrapperClassName="mt-3"
       />
 
-      <button
-        onClick={handleSend}
-        disabled={isLoading || !isAmountValid || !isAddressValid}
-        className={`mt-4 text-white ${isLoading || !isAmountValid || !isAddressValid ? "bg-gray-500" : "bg-black"} w-full rounded-2xl py-1.5 cursor-pointer`}
-      >
-        {isLoading
-          ? "Processing..."
-          : currentAccount
-            ? "Send"
-            : "Connect wallet"}
-      </button>
+      {currentAccount ? (
+        <button
+          onClick={handleSend}
+          disabled={isLoading || !isAmountValid || !isAddressValid}
+          className={`mt-4 text-white ${isLoading || !isAmountValid || !isAddressValid ? "bg-gray-500" : "bg-black"} w-full rounded-2xl py-1.5 cursor-pointer`}
+        >
+          {isLoading ? "Processing..." : "Send"}
+        </button>
+      ) : (
+        <button
+          onClick={() => {
+            setOpen(true);
+          }}
+          className={`mt-4 text-white bg-black w-full rounded-2xl py-1.5 cursor-pointer`}
+        >
+          Connect wallet
+        </button>
+      )}
+
       {txError && (
         <div className="mt-2 text-red-500 text-sm text-center">{txError}</div>
       )}
